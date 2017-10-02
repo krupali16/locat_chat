@@ -18,17 +18,17 @@ function loginWithGoogle(){
 });
 }
 
-function ifUserIsLoggedIn(fn){
+function ifUserIsLoggedIn(){
+	
 firebase.auth().onAuthStateChanged(function(user) {
+	
   if (user) {
     window.currentUser={
       id: user.uid,
       name: user.displayName,
       email: user.email
     };
-    fn();
   } else {
-    // No user is signed in.
   }
 });
 }
@@ -60,20 +60,26 @@ function createUser(uid, uname, uemail)
   });
 }
 
-function createGroup(uid, uname, uemail)
+function createGroup()
 {
-  // Get a reference to the database service
-  var database = firebase.database();
+	//ifUserIsLoggedIn();
+	//alert(window.currentUser.id);
+	var user = firebase.auth().currentUser;
 
-  var usersRef=database.ref("users");
+	  var group_name = document.getElementById("txt_grpName").value;
+	  var database = firebase.database();
 
-  var user={
-    id: uid,
-    name:uname,
-    email: uemail
-  }
+	  var groupsRef=database.ref("groups");
+	  var group_id = database.ref("groups").push().key;
+	  var group={
+	    group_id: group_id,
+	    name:group_name,
+	    admin: user.uid
+	    //admin: window.currentUser.id
+	  }
 
-  usersRef.child(uid).set(user).then(function(){
-    redirect("chats.html");
-  });
+	  groupsRef.child(group_id).set(group).then(function(){
+	    redirect("chats.html");
+	  });
+	
 }
