@@ -74,12 +74,72 @@ function createGroup()
 	  var group={
 	    group_id: group_id,
 	    name:group_name,
-	    admin: user.uid
+	    admin: user.uid,
+      members:""
 	    //admin: window.currentUser.id
 	  }
 
 	  groupsRef.child(group_id).set(group).then(function(){
 	    redirect("chats.html");
 	  });
-	
+ 
+}
+
+function joinGroup(id, group_name)
+{
+
+  var user = firebase.auth().currentUser;
+
+  var memb = user.uid;
+  
+  var obj = {[memb]:true};
+
+  var grpRef = firebase.database().ref('/groups/'+id+'/members');
+  
+  grpRef.update(obj);
+
+  localStorage.setItem("group", id+","+group_name);
+  
+  redirect("group.html");
+
+}
+
+function fetchGroups()
+{
+
+  var database=firebase.database();
+  
+  var groupRef=database.ref("groups");
+  
+  groupRef.on('value',function(snapshot){
+
+    var groups=snapshot.val();
+    
+    for(var gid in groups){
+
+      var group = groups[gid];
+      
+      console.log("group:"+group.name);
+
+      var newlabel = document.createElement("Button");
+      
+      newlabel.innerHTML = group.name;
+    
+      newlabel.setAttribute("id", group.group_id);
+      newlabel.setAttribute("name", group.name);
+
+      newlabel.onclick = function(){
+    
+        joinGroup(this.id, this.name);
+  
+      }
+
+      document.getElementById("groups").appendChild(newlabel);
+
+    }
+
+  });
+
+
+  
 }
