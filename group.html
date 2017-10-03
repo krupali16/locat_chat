@@ -2,7 +2,8 @@
 <BODY>
 	
 	<h1 id="group_name">Group Details</h1>
-	<input id="txt_msg" type="text"/>&nbsp;<button id="btn_send">Send</button>
+	<div id="msgs"></div>
+	<br/><input id="txt_msg" type="text"/>&nbsp;<button id="send_button">Send</button>
 
 <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
 <script>
@@ -21,8 +22,12 @@
   window.onload = function() {
   	 var res = localStorage.getItem("group").split(",");
      document.getElementById('group_name').innerHTML = res[1];
+     loadMsgs(res[0]);
   }
 </script>
+
+<script type="text/javascript" src="methods.js"></script>
+<script type="text/javascript" src="app.js"></script>
 
 </BODY>
 </HTML>

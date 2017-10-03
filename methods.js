@@ -64,6 +64,7 @@ function createGroup()
 {
 	//ifUserIsLoggedIn();
 	//alert(window.currentUser.id);
+  alert();
 	var user = firebase.auth().currentUser;
 
 	  var group_name = document.getElementById("txt_grpName").value;
@@ -79,9 +80,7 @@ function createGroup()
 	    //admin: window.currentUser.id
 	  }
 
-	  groupsRef.child(group_id).set(group).then(function(){
-	    redirect("chats.html");
-	  });
+	  groupsRef.child(group_id).set(group);
  
 }
 
@@ -106,7 +105,6 @@ function joinGroup(id, group_name)
 
 function fetchGroups()
 {
-
   var database=firebase.database();
   
   var groupRef=database.ref("groups");
@@ -118,8 +116,6 @@ function fetchGroups()
     for(var gid in groups){
 
       var group = groups[gid];
-      
-      console.log("group:"+group.name);
 
       var newlabel = document.createElement("Button");
       
@@ -129,17 +125,53 @@ function fetchGroups()
       newlabel.setAttribute("name", group.name);
 
       newlabel.onclick = function(){
-    
-        joinGroup(this.id, this.name);
-  
+        joinGroup(this.id, this.name); 
       }
 
       document.getElementById("groups").appendChild(newlabel);
-
     }
 
   });
+}
 
-
+function sendMsg()
+{
+  document.getElementById("msgs").innerHTML="";
+  var user = firebase.auth().currentUser;
+  var res = localStorage.getItem("group").split(",");
+  var grpRef = firebase.database().ref('/groups/'+res[0]+'/messages');
+  var msgid = firebase.database().ref('/groups/'+res[0]+'/messages').push().key;
+  var msg = document.getElementById("txt_msg").value;
   
+  var message={
+      message_id: msgid,
+      sender_id: user.uid,
+      message: msg
+    }
+
+    grpRef.child(msgid).set(message);
+    var msg = document.getElementById("txt_msg").value="";
+}
+
+function loadMsgs(grp_id)
+{
+   var database=firebase.database();
+  var chatsRef=database.ref('/groups/'+grp_id+'/messages');
+
+  chatsRef.on('value',function(snapshot){
+    var messages=snapshot.val();
+
+    for(var mid in messages){
+        var msg = messages[mid];
+
+        var newlabel = document.createElement("Label");
+        newlabel.innerHTML = msg.message;  
+        document.getElementById("msgs").appendChild(newlabel);      
+        linebreak = document.createElement("br");
+        document.getElementById("msgs").appendChild(linebreak);      
+    }
+
+
+    
+  });
 }
