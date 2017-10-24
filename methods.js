@@ -62,26 +62,84 @@ function createUser(uid, uname, uemail)
 
 function createGroup()
 {
-	//ifUserIsLoggedIn();
-	//alert(window.currentUser.id);
-  alert();
+  var database = firebase.database();
 	var user = firebase.auth().currentUser;
 
-	  var group_name = document.getElementById("txt_grpName").value;
-	  var database = firebase.database();
-
-	  var groupsRef=database.ref("groups");
+	  var group_name = document.getElementById("txt_grpName").value;	
+    var radius = document.getElementById("txt_radius").value;    
+	  
 	  var group_id = database.ref("groups").push().key;
-	  var group={
-	    group_id: group_id,
-	    name:group_name,
-	    admin: user.uid,
-      members:""
-	    //admin: window.currentUser.id
-	  }
+    var groupsRef=database.ref("groups");
 
-	  groupsRef.child(group_id).set(group);
- 
+     if (!navigator.geolocation){
+      output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
+      return;
+    }
+
+    function success(position) {
+      var latitude  = position.coords.latitude;
+      var longitude = position.coords.longitude;      
+
+      var group={
+        group_id: group_id,
+        name:group_name,
+        admin: user.uid,
+        latitude: latitude,
+        longitude: longitude,
+        radius: parseInt(radius),
+        members:""
+        //admin: window.currentUser.id
+      }
+    
+       groupsRef.child(group_id).set(group);     
+
+       document.getElementById("txt_grpName").value = "";  
+    }
+
+    function error() {
+      output.innerHTML = "Unable to retrieve your location";
+    }
+
+    navigator.geolocation.getCurrentPosition(success, error);
+
+
+     /*var output = document.getElementById('test');
+    if (!navigator.geolocation){
+      output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
+      return;
+    }
+
+    function success(position) {
+      var latitude  = position.coords.latitude;
+      var longitude = position.coords.longitude;
+
+
+      //function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(latitude-23.181469);  // deg2rad below
+  var dLon = deg2rad(longitude-72.566281); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(23.181469)) * Math.cos(deg2rad(latitude)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  
+//}
+      output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>' + d;
+    }
+
+    function error() {
+      output.innerHTML = "Unable to retrieve your location";
+    }
+
+    output.innerHTML = "<p>Locating…</p>";*/
+}
+
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
 }
 
 function joinGroup(id, group_name)
@@ -105,6 +163,7 @@ function joinGroup(id, group_name)
 
 function fetchGroups()
 {
+  document.getElementById("groups").innerHTML = "";
   var database=firebase.database();
   
   var groupRef=database.ref("groups");

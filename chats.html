@@ -1,16 +1,47 @@
-<HTML>	
-<BODY>
-	<button id="creategrp_button" class="button">Create Group</button><br/><br/>
-  <input type = "text" id = "txt_grpName"/><br/><br/>
-	
-	<button id="fetchgrp_button" class="button">Fetch Group</button><br/><br/>
-	<script type="text/javascript" src="methods.js"></script>
-    <script type="text/javascript" src="app.js"></script>
+<HTML>  
+<head> 
+  <title>LOcat</title>
+</head>
+<body>
+  
+    <!--<link href="http://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="./login.css" rel="stylesheet">
+    
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>-->
+  
 
-    <div id="groups">
 
+  <div class="col-md-4 login-sec">
+        <h2 class="text-center">Chat Activity</h2>
+        <form class="login-form">
+      
+    <div class="form-group">
+      <label id="creategroup" class="text-center">Create Chat Group</label>
+      <input type="text" id="txt_grpName" class="form-control" placeholder="Group Name"><br/>
+
+      <label id="creategroup" class="text-center">Provide Radius</label>
+      <input type="text" id="txt_radius" class="form-control" placeholder="Radius">
     </div>
 
+    <div class="form-check">
+    
+      <br/>
+      <input type="button" id="creategrp_button" value="Create Group" class="btn btn-login float-right"></input>
+      <div id="test"></div>
+
+    </div>
+  <br/>
+  <br/>
+</form>
+  <button id="fetchgrp_button" type="submit" class="btn btn-login float-right">Fetch Groups</button>
+    </div>
+
+  <script type="text/javascript" src="methods.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+        <div id="groups">  
+        </div>
+  
 <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -25,5 +56,5 @@
   firebase.initializeApp(config);
 </script>
 
-</BODY>
+</body>
 </HTML>
