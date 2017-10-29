@@ -19,9 +19,9 @@ function loginWithGoogle(){
 }
 
 function ifUserIsLoggedIn(){
-	
+  
 firebase.auth().onAuthStateChanged(function(user) {
-	
+  
   if (user) {
     window.currentUser={
       id: user.uid,
@@ -63,12 +63,12 @@ function createUser(uid, uname, uemail)
 function createGroup()
 {
   var database = firebase.database();
-	var user = firebase.auth().currentUser;
+  var user = firebase.auth().currentUser;
 
-	  var group_name = document.getElementById("txt_grpName").value;	
+    var group_name = document.getElementById("txt_grpName").value;  
     var radius = document.getElementById("txt_radius").value;    
-	  
-	  var group_id = database.ref("groups").push().key;
+    
+    var group_id = database.ref("groups").push().key;
     var groupsRef=database.ref("groups");
 
      if (!navigator.geolocation){
@@ -79,13 +79,13 @@ function createGroup()
     function success(position) {
       var latitude  = position.coords.latitude;
       var longitude = position.coords.longitude;      
-
+      alert(longitude+" "+latitude);
       var group={
         group_id: group_id,
         name:group_name,
         admin: user.uid,
-        latitude: latitude,
-        longitude: longitude,
+        latitude: latitude.toFixed(7),
+        longitude: longitude.toFixed(7),
         radius: parseInt(radius),
         members:""
         //admin: window.currentUser.id
@@ -161,12 +161,67 @@ function joinGroup(id, group_name)
 
 }
 
+// function fetchGroups()
+// {
+//   document.getElementById("groups").innerHTML = "";
+//   var database=firebase.database();
+  
+//   var groupRef=database.ref("groups");
+  
+//   groupRef.on('value',function(snapshot){
+
+//     var groups=snapshot.val();
+    
+//     for(var gid in groups){
+
+//       var group = groups[gid];
+
+//       var newlabel = document.createElement("Button");
+      
+//       newlabel.innerHTML = group.name;
+    
+//       newlabel.setAttribute("id", group.group_id);
+//       newlabel.setAttribute("name", group.name);
+
+//       newlabel.onclick = function(){
+//         joinGroup(this.id, this.name); 
+//       }
+
+//       document.getElementById("groups").appendChild(newlabel);
+//     }
+
+//   });
+// }
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+
 function fetchGroups()
 {
-  document.getElementById("groups").innerHTML = "";
   var database=firebase.database();
-  
-  var groupRef=database.ref("groups");
+  document.getElementById("groups").innerHTML = "";
+
+
+   function success(position) {
+      var latitude1  = position.coords.latitude;
+      var longitude1 = position.coords.longitude;      
+
+       var groupRef=database.ref("groups");
   
   groupRef.on('value',function(snapshot){
 
@@ -175,22 +230,44 @@ function fetchGroups()
     for(var gid in groups){
 
       var group = groups[gid];
+      var latitude2 = group.latitude;
+      var longitude2 = group.longitude;
+      var radius = group.radius;
+      // latitude2 = 23.229358;
+      // longitude2 = 72.673874;  //5.5 km
 
-      var newlabel = document.createElement("Button");
+      // latitude2 = 23.201205;
+      // longitude2 = 72.665915;  //3.5 km
+
+      var dist = getDistanceFromLatLonInKm(latitude1,longitude1,latitude2,longitude2);
+
+      if(dist <= radius){
+
+        var newlabel = document.createElement("Button");
+        
+        newlabel.innerHTML = group.name;
       
-      newlabel.innerHTML = group.name;
-    
-      newlabel.setAttribute("id", group.group_id);
-      newlabel.setAttribute("name", group.name);
+        newlabel.setAttribute("id", group.group_id);
+        newlabel.setAttribute("name", group.name);
 
-      newlabel.onclick = function(){
-        joinGroup(this.id, this.name); 
+        newlabel.onclick = function(){
+          joinGroup(this.id, this.name); 
+        }
+
+        document.getElementById("groups").appendChild(newlabel);
       }
-
-      document.getElementById("groups").appendChild(newlabel);
     }
 
   });
+
+    }
+
+    function error() {
+      output.innerHTML = "Unable to retrieve your location";
+    }
+
+    navigator.geolocation.getCurrentPosition(success, error);
+
 }
 
 function sendMsg()
