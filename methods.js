@@ -264,6 +264,7 @@ function fetchGroups()
 
     function error() {
       output.innerHTML = "Unable to retrieve your location";
+      
     }
 
     navigator.geolocation.getCurrentPosition(success, error);
