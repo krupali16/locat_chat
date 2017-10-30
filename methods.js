@@ -288,6 +288,7 @@ function sendMsg()
 
     grpRef.child(msgid).set(message);
     var msg = document.getElementById("txt_msg").value="";
+    console.log('sendmsg');
 }
 
 function loadMsgs(grp_id)
@@ -307,7 +308,7 @@ function loadMsgs(grp_id)
         linebreak = document.createElement("br");
         document.getElementById("msgs").appendChild(linebreak);      
     }
-
+    console.log('loadmsg');
 
     
   });
