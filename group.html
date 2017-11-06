@@ -22,7 +22,19 @@
   window.onload = function() {
   	 var res = localStorage.getItem("group").split(",");
      document.getElementById('group_name').innerHTML = res[1];
-     loadMsgs(res[0]);
+     var messagesList="";
+     loadMsgs(res[0], function(messages){
+        // var messagesList="";
+        // console.log(messages);
+        // for(var uid in messages){
+        //   //var message=messages[uid];
+        //   //var messagess=messages.message;
+           //console.log(messages);
+           //console.log('abc');
+        // }
+        messagesList += renderMessage(messages)+'<br/>';
+        getElement("msgs").innerHTML = messagesList;
+      });     
   }
 </script>
 

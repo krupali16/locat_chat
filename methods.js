@@ -9,6 +9,7 @@ function loginWithGoogle(){
   var provider = new firebase.auth.GoogleAuthProvider();
   
   firebase.auth().signInWithPopup(provider).then(function(result) {
+    console.log(result);
   var user = result.user;
   
   createUser(user.uid,user.displayName,user.email);
@@ -42,6 +43,10 @@ function redirect(path) {
   return false;
 }
 
+function getElement(id){
+  return document.getElementById(id);
+}
+
 function createUser(uid, uname, uemail)
 {
   // Get a reference to the database service
@@ -56,7 +61,7 @@ function createUser(uid, uname, uemail)
   }
 
   usersRef.child(uid).set(user).then(function(){
-    redirect("chats.html");
+   // redirect("chats.html");
   });
 }
 
@@ -291,25 +296,44 @@ function sendMsg()
     console.log('sendmsg');
 }
 
-function loadMsgs(grp_id)
+function loadMsgs(grp_id, fn)
 {
-   var database=firebase.database();
+  var database=firebase.database();
   var chatsRef=database.ref('/groups/'+grp_id+'/messages');
 
-  chatsRef.on('value',function(snapshot){
+  chatsRef.on('child_added',function(snapshot){
     var messages=snapshot.val();
-
-    for(var mid in messages){
-        var msg = messages[mid];
-
-        var newlabel = document.createElement("Label");
-        newlabel.innerHTML = msg.message;  
-        document.getElementById("msgs").appendChild(newlabel);      
-        linebreak = document.createElement("br");
-        document.getElementById("msgs").appendChild(linebreak);      
-    }
-    console.log('loadmsg');
-
-    
+    fn(messages);
+    //console.log(messages);
   });
+
+  // chatsRef.on('value',function(snapshot){
+  //   var messages=snapshot.val();
+
+  //   for(var mid in messages) {
+  //       var msg = messages[mid];
+
+  //       var newlabel = document.createElement("Label");
+  //       newlabel.innerHTML = msg.message;  
+  //       document.getElementById("msgs").appendChild(newlabel);      
+  //       linebreak = document.createElement("br");
+  //       document.getElementById("msgs").appendChild(linebreak);      
+  //   }
+  //   console.log('loadmsg');    
+  // });
+}
+
+function renderMessage(messages){
+  //var text=messages.message;
+  console.log(messages);
+  return messages['message'];
+  //return messages.message;
+  // var msgClass="message";
+
+  // if(message.sender_id == window.currentUser.id){
+  //   msgClass="message by-user";
+  // }
+
+  // var html='<div class="'+msgClass+'">' + text + '</div>';
+  // return html;
 }
