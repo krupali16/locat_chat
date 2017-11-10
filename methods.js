@@ -6,17 +6,49 @@ function click(elementId,fn){
 }
 
 function loginWithGoogle(){
+
+  var database = firebase.database();
   var provider = new firebase.auth.GoogleAuthProvider();
   
   firebase.auth().signInWithPopup(provider).then(function(result) {
-    console.log(result);
   var user = result.user;
+  var displayName = user.displayName;
+  var uuid = user.uid;
+  var email = user.email;
   
-  createUser(user.uid,user.displayName,user.email);
-  // ...
+  var usersRef=database.ref('/users');
+
+  usersRef.once('value',function(snapshot){
+    alert(uuid);
+   if (!snapshot.hasChild(uuid)) {
+      alert(uuid);
+      var username = prompt("Please enter your Display Name");
+      var gender = prompt("Please enter your Gender");
+      var birth_date = prompt("Please enter your Birth date");      
+
+      if (username != null && gender != null && birth_date != null) {
+          
+           var user={
+              username: username,
+              gender: gender,
+              birth_date: birth_date,
+              email: "",
+              id: "",
+              name: ""
+            }
+
+            usersRef.child(uuid).set(user);
+      }
+   }
+
+   createUser(uuid, displayName, email); 
+
+  });
+  
 }).catch(function(error) {
   console.log(error.message);
 });
+
 }
 
 function ifUserIsLoggedIn(){
@@ -49,20 +81,11 @@ function getElement(id){
 
 function createUser(uid, uname, uemail)
 {
-  // Get a reference to the database service
   var database = firebase.database();
-
   var usersRef=database.ref("users");
 
-  var user={
-    id: uid,
-    name:uname,
-    email: uemail
-  }
-
-  usersRef.child(uid).set(user).then(function(){
-   // redirect("chats.html");
-  });
+  usersRef.child(uid).update({ id: uid, name: uname, email: uemail });
+  redirect("chats.html");
 }
 
 function createGroup()
