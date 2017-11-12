@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>LOcat</title>
+</head>
+
+<body class="homepage">
+
+<!-- <button  class="button">Sign in with google</button><br/><br/> -->
+<head>
+    <meta charset="utf-8">
+    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
+    <title>LOcat</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  
+</head>
+<body class="homepage">
+<section class="login-block">
+    <div class="container">
+  <div class="row">
+    <div class="col-md-4 login-sec">
+        <h2 class="text-center">Sign in Now</h2>
+        <form class="login-form">
+  <div class="form-group">
+    <label for="exampleInputEmail1" class="text-uppercase">Username</label>
+    <input type="text" class="form-control">
+    
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1" class="text-uppercase">Password</label>
+    <input type="password" class="form-control">
+  </div>
+  
+  
+    <div class="form-check">
+    <button type="submit" class="btn btn-login float-right">Sign in</button>
+  </div>
+  <br/>
+  <br/>
+</form>
+
+  <button id="signin-button" class="button btn btn-login">Sign in with google</button><br/><br/>
+    </div>
+    
+</div>
+</section>
+
+
+<script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyA5SDtRFYgxDXrJhsZpl335_APMvT5OLF4",
+    authDomain: "locat-6ac6f.firebaseapp.com",
+    databaseURL: "https://locat-6ac6f.firebaseio.com",
+    projectId: "locat-6ac6f",
+    storageBucket: "",
+    messagingSenderId: "851304047674"
+  };
+  firebase.initializeApp(config);
+</script>
+
+    <script type="text/javascript" src="methods.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+
+
+</body>
+</html>

@@ -1,53 +1,109 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>LOcat</title>
+  <link rel="stylesheet" type="text/css" href="css/vendor/foundation.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/app.css" />
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script type="text/javascript" src="js/vendor/jquery.js"></script>
+  <script type="text/javascript" src="js/vendor/foundation.min.js"></script>
+  <script type="text/javascript" src="js/vendor/what-input.js"></script>
 </head>
-
-<body class="homepage">
-
-<!-- <button  class="button">Sign in with google</button><br/><br/> -->
-<head>
-    <meta charset="utf-8">
-    <!-- This file has been downloaded from Bootsnipp.com. Enjoy! -->
-    <title>LOcat</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<body>
   
-</head>
-<body class="homepage">
-<section class="login-block">
-    <div class="container">
-  <div class="row">
-    <div class="col-md-4 login-sec">
-        <h2 class="text-center">Sign in Now</h2>
-        <form class="login-form">
-  <div class="form-group">
-    <label for="exampleInputEmail1" class="text-uppercase">Username</label>
-    <input type="text" class="form-control">
-    
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1" class="text-uppercase">Password</label>
-    <input type="password" class="form-control">
-  </div>
-  
-  
-    <div class="form-check">
-    <button type="submit" class="btn btn-login float-right">Sign in</button>
-  </div>
-  <br/>
-  <br/>
-</form>
-
-  <button id="signin-button" class="button btn btn-login">Sign in with google</button><br/><br/>
+    <div class="translucent-form-overlay reveal" id="firstLogin" data-reveal>
+      <form>
+        <h3>Just a step away...</h3>
+        <div class="row columns">
+          <label>Username
+            <input type="text" name="username" placeholder="Must be unique">
+          </label>
+        </div>
+        <div class="row columns">
+          <label>Gender
+            <select name="gender" type="text">
+              <option>Gender</option>
+              <option value="rent">Male</option>
+              <option value="buy">Female</option>
+            </select>
+          </label>
+        </div>
+        <div class="row columns">
+          <label>Date of Birth
+            <input type="text" name="dob" placeholder="DD/MM/YY">
+          </label>
+        </div>
+        <button type="button" class="primary button expanded search-button">
+          Let's get started.
+        </button>
+     </form>
     </div>
-    
-</div>
-</section>
 
+
+  <div class="hero-full-screen">
+  <div class="top-content-section">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <ul class="menu" id="heromenu">
+          <li class="menu-text"><img src="http://placehold.it/135x33" alt="logo"></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Features</a></li>
+          <li data-open="firstLogin"><img src="resources/google.png" width="135px"></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="middle-content-section">
+    <h1>There's always someone around.</h1>
+    <h3>Locate. Chat. Ask.</h3>
+    <button class="button large" id="signin-button">Let's socialize</button>
+  </div>
+
+  <div class="bottom-content-section" data-magellan data-threshold="0">
+    <a href="#main-content-section"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 12c0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12 12-5.373 12-12zm-18.005-1.568l1.415-1.414 4.59 4.574 4.579-4.574 1.416 1.414-5.995 5.988-6.005-5.988z"/></svg></a>
+  </div>
+
+</div>
+
+<div id="main-content-section" data-magellan-target="main-content-section">
+  <!-- your content goes here -->
+</div>
+
+
+<div class="marketing-site-features">
+  <h2 class="marketing-site-features-headline">What LOcat offers</h2>
+  <p class="marketing-site-features-subheadline subheader">Lorem ipsum dolor sit amet, consectetur adipisicing elit quaerat eos words and phrases.</p>
+  <div class="grid-x">
+    <div class="small-6 cell medium-2 center">
+      <i class="fa fa-group" aria-hidden="true"></i>
+      <h4 class="marketing-site-features-title">Group Chat</h4>
+      <p class="marketing-site-features-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+    </div>
+    <div class="small-6 cell medium-2 center">
+      <i class="fa fa-comments-o" aria-hidden="true"></i>
+      <h4 class="marketing-site-features-title">Private Chat</h4>
+      <p class="marketing-site-features-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+    </div>
+    <div class="small-6 cell medium-2 center">
+      <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+      <h4 class="marketing-site-features-title">ASK!</h4>
+      <p class="marketing-site-features-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+    </div>
+    <div class="small-6 cell medium-2 center">
+      <i class="fa fa-location-arrow" aria-hidden="true"></i>
+      <h4 class="marketing-site-features-title">Location</h4>
+      <p class="marketing-site-features-desc">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+    </div>
+  </div>
+</div>
+
+<div class="grid-x">
+    <div class="googleplay">
+      <img src="resources/google-play-badge.png">
+    </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/4.4.0/firebase.js"></script>
 <script>
@@ -63,9 +119,9 @@
   firebase.initializeApp(config);
 </script>
 
-    <script type="text/javascript" src="methods.js"></script>
-    <script type="text/javascript" src="app.js"></script>
-
+<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="methods.js"></script>
+<script type="text/javascript" src="app.js"></script>
 
 </body>
 </html>

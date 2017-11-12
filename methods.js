@@ -19,9 +19,9 @@ function loginWithGoogle(){
   var usersRef=database.ref('/users');
 
   usersRef.once('value',function(snapshot){
-    alert(uuid);
+    
    if (!snapshot.hasChild(uuid)) {
-      alert(uuid);
+      
       var username = prompt("Please enter your Display Name");
       var gender = prompt("Please enter your Gender");
       var birth_date = prompt("Please enter your Birth date");      
@@ -244,7 +244,6 @@ function fetchGroups()
   var database=firebase.database();
   document.getElementById("groups").innerHTML = "";
 
-
    function success(position) {
       var latitude1  = position.coords.latitude;
       var longitude1 = position.coords.longitude;      
@@ -304,10 +303,9 @@ function sendMsg()
   document.getElementById("msgs").innerHTML="";
   var user = firebase.auth().currentUser;
   var res = localStorage.getItem("group").split(",");
-  var grpRef = firebase.database().ref('/groups/'+res[0]+'/messages');
-  var msgid = firebase.database().ref('/groups/'+res[0]+'/messages').push().key;
+  var grpRef = firebase.database().ref('/messages/'+res[0]+'/message');
+  var msgid = firebase.database().ref('/messages/'+res[0]+'/message').push().key;
   var msg = document.getElementById("txt_msg").value;
-  
   var message={
       message_id: msgid,
       sender_id: user.uid,
@@ -319,36 +317,35 @@ function sendMsg()
     console.log('sendmsg');
 }
 
+// function loadMsgs(grp_id, fn)
+// {
+//   var database=firebase.database();
+//   var chatsRef=database.ref('/groups/'+grp_id+'/messages');
+
+//   chatsRef.on('child_added',function(snapshot){
+//     var messages=snapshot.val();
+//     fn(messages);
+//     console.log(messages);
+//   });
+// }
+
 function loadMsgs(grp_id, fn)
 {
   var database=firebase.database();
-  var chatsRef=database.ref('/groups/'+grp_id+'/messages');
+  //var chatsRef=database.ref('/groups/'+grp_id+'/messages');
+  var chatsRef=database.ref('/messages/'+grp_id+'/message');
+alert('load');
 
   chatsRef.on('child_added',function(snapshot){
     var messages=snapshot.val();
     fn(messages);
-    //console.log(messages);
+    console.log(messages);
   });
-
-  // chatsRef.on('value',function(snapshot){
-  //   var messages=snapshot.val();
-
-  //   for(var mid in messages) {
-  //       var msg = messages[mid];
-
-  //       var newlabel = document.createElement("Label");
-  //       newlabel.innerHTML = msg.message;  
-  //       document.getElementById("msgs").appendChild(newlabel);      
-  //       linebreak = document.createElement("br");
-  //       document.getElementById("msgs").appendChild(linebreak);      
-  //   }
-  //   console.log('loadmsg');    
-  // });
 }
 
 function renderMessage(messages){
   //var text=messages.message;
-  console.log(messages);
+  
   return messages['message'];
   //return messages.message;
   // var msgClass="message";
