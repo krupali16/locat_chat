@@ -129,40 +129,6 @@ function createGroup()
     }
 
     navigator.geolocation.getCurrentPosition(success, error);
-
-
-     /*var output = document.getElementById('test');
-    if (!navigator.geolocation){
-      output.innerHTML = "<p>Geolocation is not supported by your browser</p>";
-      return;
-    }
-
-    function success(position) {
-      var latitude  = position.coords.latitude;
-      var longitude = position.coords.longitude;
-
-
-      //function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-  var R = 6371; // Radius of the earth in km
-  var dLat = deg2rad(latitude-23.181469);  // deg2rad below
-  var dLon = deg2rad(longitude-72.566281); 
-  var a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(deg2rad(23.181469)) * Math.cos(deg2rad(latitude)) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2)
-    ; 
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-  var d = R * c; // Distance in km
-  
-//}
-      output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>' + d;
-    }
-
-    function error() {
-      output.innerHTML = "Unable to retrieve your location";
-    }
-
-    output.innerHTML = "<p>Locating…</p>";*/
 }
 
 
@@ -173,53 +139,80 @@ function deg2rad(deg) {
 function joinGroup(id, group_name)
 {
 
-  var user = firebase.auth().currentUser;
+  // var user = firebase.auth().currentUser;
 
-  var memb = user.uid;
+  // var memb = user.uid;
   
-  var obj = {[memb]:true};
+  // var obj = {[memb]:true};
+  // var grpRef = firebase.database().ref('/groups/'+id+'/members');
+  // grpRef.update(obj);
 
-  var grpRef = firebase.database().ref('/groups/'+id+'/members');
-  
-  grpRef.update(obj);
+  // var userRef = firebase.database().ref('/users/'+memb+'/groups');
+  // var obj = {[id]:true};
+  // userRef.update(obj);
 
-  localStorage.setItem("group", id+","+group_name);
+  // localStorage.setItem("group", id+","+group_name);
   
-  redirect("group.html");
+  //  redirect("group.html");
+
+  getJoinedGroups()
 
 }
 
-// function fetchGroups()
-// {
-//   document.getElementById("groups").innerHTML = "";
-//   var database=firebase.database();
+function getJoinedGroups()
+{
+  var user = firebase.auth().currentUser;
+  var memb = user.uid;
+
+  var arr = [];
+  var database = firebase.database();
+  var grpRef = database.ref('/users/'+memb+'/groups');
   
-//   var groupRef=database.ref("groups");
+  grpRef.on('value',function(snapshot){
+  var num_groups = snapshot.numChildren();
+    var allgroups=[];
+    var groups=snapshot.val();
+    for(var gid in groups){
+
+      var Ref = database.ref('/groups/'+gid);     
+
+      Ref.on('value',function(snapshot){
+
+         var data = snapshot.val();
+         allgroups.push(data);
+      });
+
+    }
+    for(let i in allgroups)
+    {
+       var newRef = database.ref('/messages/'+allgroups[i].group_id+'/message').orderByChild('timestamp').limitToLast(1);
+       let grp_name = allgroups[i].name;
+       newRef.on('value',function(snapshot){
+          var msgs = snapshot.val();
+          var last_msg = msgs[Object.keys(msgs)[0]].message;
+          var sender_id = msgs[Object.keys(msgs)[0]].sender_id;
+
+          var users = database.ref('/users/'+sender_id+'/username');
+          
+          users.on('value',function(snapshot){
+
+                var details={
+                  group_name: grp_name,
+                  last_message:last_msg,
+                  sender_id: sender_id,
+                  sender_name: snapshot.val()                  
+                }
+
+                arr.push(details);
+
+              });
+        });
+
+    }
+  });
   
-//   groupRef.on('value',function(snapshot){
-
-//     var groups=snapshot.val();
-    
-//     for(var gid in groups){
-
-//       var group = groups[gid];
-
-//       var newlabel = document.createElement("Button");
-      
-//       newlabel.innerHTML = group.name;
-    
-//       newlabel.setAttribute("id", group.group_id);
-//       newlabel.setAttribute("name", group.name);
-
-//       newlabel.onclick = function(){
-//         joinGroup(this.id, this.name); 
-//       }
-
-//       document.getElementById("groups").appendChild(newlabel);
-//     }
-
-//   });
-// }
+    console.log(arr);
+}
 
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
@@ -290,8 +283,7 @@ function fetchGroups()
     }
 
     function error() {
-      output.innerHTML = "Unable to retrieve your location";
-      
+      output.innerHTML = "Unable to retrieve your location";     
     }
 
     navigator.geolocation.getCurrentPosition(success, error);
@@ -306,54 +298,32 @@ function sendMsg()
   var grpRef = firebase.database().ref('/messages/'+res[0]+'/message');
   var msgid = firebase.database().ref('/messages/'+res[0]+'/message').push().key;
   var msg = document.getElementById("txt_msg").value;
+
   var message={
       message_id: msgid,
       sender_id: user.uid,
-      message: msg
+      message: msg,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
     }
 
     grpRef.child(msgid).set(message);
     var msg = document.getElementById("txt_msg").value="";
-    console.log('sendmsg');
+
+    var ref = firebase.database().ref("messages/"+res[0]+"/message");
+
 }
-
-// function loadMsgs(grp_id, fn)
-// {
-//   var database=firebase.database();
-//   var chatsRef=database.ref('/groups/'+grp_id+'/messages');
-
-//   chatsRef.on('child_added',function(snapshot){
-//     var messages=snapshot.val();
-//     fn(messages);
-//     console.log(messages);
-//   });
-// }
 
 function loadMsgs(grp_id, fn)
 {
   var database=firebase.database();
-  //var chatsRef=database.ref('/groups/'+grp_id+'/messages');
   var chatsRef=database.ref('/messages/'+grp_id+'/message');
-alert('load');
 
   chatsRef.on('child_added',function(snapshot){
     var messages=snapshot.val();
     fn(messages);
-    console.log(messages);
   });
 }
 
 function renderMessage(messages){
-  //var text=messages.message;
-  
   return messages['message'];
-  //return messages.message;
-  // var msgClass="message";
-
-  // if(message.sender_id == window.currentUser.id){
-  //   msgClass="message by-user";
-  // }
-
-  // var html='<div class="'+msgClass+'">' + text + '</div>';
-  // return html;
 }
